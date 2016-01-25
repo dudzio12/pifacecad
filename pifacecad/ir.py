@@ -1,6 +1,9 @@
 import threading
 import multiprocessing
-import multiprocessing.queues
+try:
+    from multiprocessing import SimpleQueue
+except ImportError:
+    from multiprocessing.queues import SimpleQueue
 import lirc
 import pifacecommon.interrupts
 
@@ -36,7 +39,7 @@ class IREventListener(object):
         self.prog = prog
         self.lircrc = lircrc
         self.ir_function_maps = list()
-        self.event_queue = multiprocessing.queues.SimpleQueue()
+        self.event_queue = multiprocessing.SimpleQueue()
         self.detector = multiprocessing.Process(
             target=watch_ir_events, args=(self.event_queue,))
         self.dispatcher = threading.Thread(
